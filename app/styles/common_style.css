@@ -1,0 +1,18 @@
+.custom_btn {
+    cursor: pointer;
+    display: block;
+    border: none;
+    outline: none !important;
+    text-decoration: none;
+    color: var(--p-color-text);
+    border-top: 1px solid var(--p-color-bg-surface-active);
+    background-color: var(--p-color-bg-surface);
+}
+
+.custom_btn:hover {
+    background-color: var(--p-color-bg-surface-hover);
+}
+
+.custom_btn_active {
+    background-color: var(--p-color-bg-surface-active) !important;
+}

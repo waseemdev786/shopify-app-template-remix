@@ -29,4 +29,32 @@ model Session {
   locale        String?
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime?
+
+  products Product[]
+}
+
+model Product {
+  id        Int       @id @default(autoincrement())
+  productId String  
+  title     String
+  variants  Variant[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+
+  sessionId String
+  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Variant {
+  id        Int      @id @default(autoincrement())
+  variantId String
+  title     String
+  start     DateTime
+  end       DateTime
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
