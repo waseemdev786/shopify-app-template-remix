@@ -55,6 +55,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (reqMethod === "DELETE" && id && productId) {
         try {
             await deleteMetafield({ productId, admin });
+        } catch (error) {
+            console.log(error instanceof Error ? error.message : "Error occured while deleting metafield")
+        }
+        try {
             await prisma.product.delete({
                 where: {
                     sessionId: session.id,
@@ -70,6 +74,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (reqMethod === "PUT" && selectedProduct) {
         try {
             await saveMetafield({ product: selectedProduct, admin });
+        } catch (error) {
+            console.log(error instanceof Error ? error.message : "Error occured while saving metafield")
+        }
+        try {
             const dbProduct = await prisma.product.update({
                 where: {
                     id: selectedProduct.id,
@@ -184,8 +192,8 @@ export default function ProductEdit() {
                 variants: prev.variants.map((variant) => {
                     return {
                         ...variant,
-                        start: moment(selectedDates.start).startOf("day").toISOString(),
-                        end: moment(selectedDates.end).endOf("day").toISOString(),
+                        start: moment(selectedDates.start).startOf('day').toISOString(),
+                        end: moment(selectedDates.end).endOf('day').toISOString(),
                     };
                 })
             }
@@ -193,7 +201,6 @@ export default function ProductEdit() {
     }, [setSeletectProduct]);
 
     const handleSelectedDates = useCallback((variantId: string, selectedDates: { start: Date, end: Date }) => {
-
         setSeletectProduct(prev => {
             return {
                 ...prev,
@@ -201,8 +208,8 @@ export default function ProductEdit() {
                     if (variant.variantId === variantId) {
                         return {
                             ...variant,
-                            start: moment(selectedDates.start).startOf("day").toISOString(),
-                            end: moment(selectedDates.end).endOf("day").toISOString(),
+                            start: moment(selectedDates.start).startOf('day').toISOString(),
+                            end: moment(selectedDates.end).endOf('day').toISOString(),
                         };
                     }
                     return variant;
@@ -292,8 +299,8 @@ export default function ProductEdit() {
                                             onChange={(selectedDates) => handleBulkDates(selectedDates)}
                                             onMonthChange={(month: number, year: number) => setMonthAndYear({ month, year })}
                                             selected={{
-                                                start: moment(selectedProduct.variants[0].start).startOf("day").toDate(),
-                                                end: moment(selectedProduct.variants[0].end).startOf("day").toDate(),
+                                                start: moment(selectedProduct.variants[0].start).startOf('day').toDate(),
+                                                end: moment(selectedProduct.variants[0].end).startOf('day').toDate(),
                                             }}
                                             multiMonth
                                             allowRange
@@ -331,8 +338,8 @@ export default function ProductEdit() {
                                                         onChange={(selectedDates) => handleSelectedDates(variantId, selectedDates)}
                                                         onMonthChange={(month: number, year: number) => setMonthAndYear({ month, year })}
                                                         selected={{
-                                                            start: moment(variant.start).startOf("day").toDate(),
-                                                            end: moment(variant.end).startOf("day").toDate(),
+                                                            start: moment(variant.start).startOf('day').toDate(),
+                                                            end: moment(variant.end).startOf('day').toDate(),
                                                         }}
                                                         multiMonth
                                                         allowRange

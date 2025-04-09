@@ -1,0 +1,25 @@
+query RunInput {
+  cart {
+    lines {
+      quantity
+      merchandise{
+        __typename
+          ... on ProductVariant {
+          id
+          product {
+            id
+            title
+            metafield(namespace: "sales_period", key: "sales_period") { jsonValue }
+          }
+        }
+      }
+    }
+  }
+  shop{
+    __typename
+    localTime {
+      __typename
+      date
+    }
+  }
+}

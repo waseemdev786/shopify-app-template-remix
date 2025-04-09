@@ -55,6 +55,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (selectedProduct) {
         try {
             await saveMetafield({ product: selectedProduct, admin });
+        } catch (error) {
+            console.log(error instanceof Error ? error.message : "Error occured while saving metafield")
+        }
+        try {
             const savedProduct = await prisma.product.create({
                 data: {
                     productId: selectedProduct.productId,
@@ -139,6 +143,8 @@ export default function ProductAdd() {
     }, [collapsibleId, setMonthAndYear, setCollapsibleId]);
 
     const handleBulkDates = useCallback((selectedDates: { start: Date, end: Date }) => {
+        console.log(selectedDates.start.toISOString());
+        
         setSeletectProduct(prev => {
             if (!prev) return null;
             return {
@@ -254,7 +260,6 @@ export default function ProductAdd() {
                                                     }}
                                                     multiMonth
                                                     allowRange
-                                                    disableDatesBefore={moment().startOf("day").toDate()}
                                                 />
                                             </Box>
                                         </Collapsible>
@@ -295,7 +300,6 @@ export default function ProductAdd() {
                                                                 }}
                                                                 multiMonth
                                                                 allowRange
-                                                                disableDatesBefore={moment().startOf("day").toDate()}
                                                             />
                                                         </Box>
                                                     </Collapsible>

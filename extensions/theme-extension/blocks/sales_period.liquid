@@ -1,0 +1,125 @@
+<style>
+  .sales_period_message {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+  }
+</style>
+
+<div class="message_container sales_period_message"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    console.log("Sales period app initilized");
+
+    const cart_button_selectors = [
+      'form[action$="/cart/add"] button[type="submit"]',
+      'form[action$="/cart/add"] input[type="submit"]',
+      ".shopify-payment-button",
+      '[data-testid="Checkout-button"]',
+      ".product-form__submit",
+      "#AddToCart",
+      ".add-to-cart",
+    ];
+
+    const sales_period_metafield = {{- product.metafields.sales_period.sales_period | default: 'null' -}};
+    const selected_variant_id = {{- product.selected_or_first_available_variant.id | default: 'null' -}};
+    const message_container = document.querySelector("#shopify-block-{{ block.id }} .message_container");
+
+    const formattedDate = (date) => {
+      return new Date(date).toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      })
+    }
+
+    const handleMessage = (status, sales_period) => {
+      if(message_container){
+        if (status === "upcoming") {
+          message_container.innerHTML = `Sales will begin on ${formattedDate(sales_period.start)}.`;
+        } else if (status === "expired") {
+          message_container.innerHTML = `Sales ended on ${formattedDate(sales_period.end)}.`;
+        } else {
+          message_container.innerHTML = ``;
+        }        
+      }
+    }
+
+    const getSalesStatus = ({ now, start, end }) => {
+    
+      console.log(JSON.stringify({ now, start, end }))
+  
+      const dateNow = new Date(now);
+      const dateStart = new Date(start);
+      const dateEnd = new Date(end);
+  
+      if (dateNow < dateStart) return 'upcoming';
+      if (dateNow >= dateStart && dateNow <= dateEnd) return 'active';
+      return 'expired';
+    }
+
+    const handleToggleElements = (variantId) => {
+
+      const variant_sales_period = sales_period_metafield.variants.find((variant)=>{
+        return variant.variantId === "gid://shopify/ProductVariant/"+variantId
+      }) || null;
+
+      if(variant_sales_period){
+        
+        const sales_period_status = getSalesStatus({
+          now: new Date(new Date("{{ "today" | date: "%Y-%m-%d" }}").setHours(23, 59, 59, 999)).toISOString(),
+          start: variant_sales_period.start,
+          end: variant_sales_period.end
+        });
+
+        console.log(sales_period_status)
+
+        const buttons = cart_button_selectors.map((selector) =>(
+          Array.from(document.querySelectorAll(selector))
+        )).flat();
+
+        if (!buttons.length) {
+          console.log("Add to Cart buttons not found");
+          return;
+        }
+
+        handleMessage(sales_period_status, variant_sales_period);
+        {% comment %} if(sales_period_status === "active"){
+          buttons.forEach(button=> button.style.display = "");
+        }else{
+          buttons.forEach(button=> button.style.display = "none");
+        } {% endcomment %}
+      }
+    }
+
+    const handleNavigation = (event) => {
+      const variantId = new URL(event?.destination?.url)?.searchParams?.get('variant');
+      handleToggleElements(variantId || selected_variant_id)
+    }
+
+    if(sales_period_metafield){
+      console.log("Sales period metafield attached to product");
+      window.navigation.addEventListener("navigate", handleNavigation);
+      handleToggleElements(selected_variant_id)
+    }
+
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Sales period",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": []
+}
+{% endschema %}
