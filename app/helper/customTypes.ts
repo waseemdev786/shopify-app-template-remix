@@ -19,8 +19,8 @@ export type ProductsLoaderData = {
 export type CustomVariant = {
   variantId: string;
   title: string;
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
 };
 
 export type CustomProduct = {
@@ -33,8 +33,8 @@ export type DbVariant = {
   id: number;
   variantId: string;
   title: string;
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
   productId: number
 }
 
@@ -52,8 +52,8 @@ export type MixedVariant = {
   id?: number;
   variantId: string;
   title: string;
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
   productId?: number
 }
 

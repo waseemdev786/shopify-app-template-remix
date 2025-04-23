@@ -36,8 +36,8 @@ export const saveMetafield = async ({ product, admin }: {
             variants: product.variants.map((variant) => ({
                 variantId: variant.variantId,
                 title: variant.title,
-                start: variant.start,
-                end: variant.end,
+                startDate: variant.startDate,
+                endDate: variant.endDate,
             })),
         };
 
@@ -106,24 +106,5 @@ export const deleteMetafield = async ({ productId, admin }: {
     } catch (error: any) {
         console.log("Failed to delete metafield:", error);
         throw new Error("Could not delete metafield from Shopify");
-    }
-};
-
-export const getShopTimeZone = async ({ admin }: { admin: AdminApiContextWithoutRest }) => {
-    try {
-        const query = `
-          query {
-            shop {
-              ianaTimezone
-            }
-          }
-        `;
-
-        const resp = await admin.graphql(query);
-        const json = await resp.json();
-        return json?.data?.shop?.ianaTimezone;
-    } catch (error) {
-        console.log("Failed to get shop timezone:", error);
-        throw new Error("Could not get shop timezone from Shopify");
     }
 };

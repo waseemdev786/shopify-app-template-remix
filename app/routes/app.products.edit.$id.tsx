@@ -92,8 +92,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
                         create: selectedProduct.variants.map((variant: MixedVariant) => ({
                             variantId: variant.variantId,
                             title: variant.title,
-                            start: variant.start,
-                            end: variant.end,
+                            startDate: variant.startDate,
+                            endDate: variant.endDate,
                         }))
                     }
                 }
@@ -134,8 +134,8 @@ export default function ProductEdit() {
         if (response && response.length > 0) {
             const newVariants: MixedVariant[] = [];
             const existingVariants: MixedVariant[] = [];
-            const start = moment().startOf('day').toISOString(); // Today at 00:00:00
-            const end = moment().add(10, 'days').endOf('day').toISOString(); // 10 days later at 23:59:59
+            const startDate = moment().format('YYYY-MM-DD');
+            const endDate = moment().add(10, 'days').format('YYYY-MM-DD');
 
             (response as ProductVariant[]).forEach((variant: ProductVariant) => {
 
@@ -147,8 +147,8 @@ export default function ProductEdit() {
                     newVariants.push({
                         variantId: variant.id,
                         title: variant.title,
-                        start,
-                        end,
+                        startDate,
+                        endDate,
                     });
                 }
             });
@@ -168,8 +168,8 @@ export default function ProductEdit() {
     const handleBulkCollapible = useCallback((productId: string) => {
         if (collapsibleId !== productId) {
             setMonthAndYear({
-                month: moment(selectedProduct.variants[0].start).month(),
-                year: moment(selectedProduct.variants[0].end).year(),
+                month: moment(selectedProduct.variants[0].startDate).month(),
+                year: moment(selectedProduct.variants[0].endDate).year(),
             });
         }
         setCollapsibleId((prevId) => (prevId === productId ? null : productId));
@@ -178,8 +178,8 @@ export default function ProductEdit() {
     const handleCollapsible = useCallback((variant: MixedVariant) => {
         if (collapsibleId !== variant.variantId) {
             setMonthAndYear({
-                month: moment(variant.start).month(),
-                year: moment(variant.start).year(),
+                month: moment(variant.startDate).month(),
+                year: moment(variant.startDate).year(),
             });
         }
         setCollapsibleId((prevId) => (prevId === variant.variantId ? null : variant.variantId));
@@ -192,8 +192,8 @@ export default function ProductEdit() {
                 variants: prev.variants.map((variant) => {
                     return {
                         ...variant,
-                        start: moment(selectedDates.start).startOf('day').toISOString(),
-                        end: moment(selectedDates.end).endOf('day').toISOString(),
+                        startDate: moment(selectedDates.start).format('YYYY-MM-DD'),
+                        endDate: moment(selectedDates.end).format('YYYY-MM-DD'),
                     };
                 })
             }
@@ -208,8 +208,8 @@ export default function ProductEdit() {
                     if (variant.variantId === variantId) {
                         return {
                             ...variant,
-                            start: moment(selectedDates.start).startOf('day').toISOString(),
-                            end: moment(selectedDates.end).endOf('day').toISOString(),
+                            startDate: moment(selectedDates.start).format('YYYY-MM-DD'),
+                            endDate: moment(selectedDates.end).format('YYYY-MM-DD'),
                         };
                     }
                     return variant;
@@ -299,8 +299,8 @@ export default function ProductEdit() {
                                             onChange={(selectedDates) => handleBulkDates(selectedDates)}
                                             onMonthChange={(month: number, year: number) => setMonthAndYear({ month, year })}
                                             selected={{
-                                                start: moment(selectedProduct.variants[0].start).startOf('day').toDate(),
-                                                end: moment(selectedProduct.variants[0].end).startOf('day').toDate(),
+                                                start: moment(selectedProduct.variants[0].startDate).toDate(),
+                                                end: moment(selectedProduct.variants[0].endDate).toDate(),
                                             }}
                                             multiMonth
                                             allowRange
@@ -322,7 +322,7 @@ export default function ProductEdit() {
                                                 <Box padding={"300"}>
                                                     <InlineStack align="space-between" blockAlign="center" gap={"300"}>
                                                         <Text as="span">{variant.title}</Text>
-                                                        <Badge>{`${moment(variant.start).format("DD/MM/YYYY")} - ${moment(variant.end).format("DD/MM/YYYY")}`}</Badge>
+                                                        <Badge>{`${moment(variant.startDate).format("DD/MM/YYYY")} - ${moment(variant.endDate).format("DD/MM/YYYY")}`}</Badge>
                                                     </InlineStack>
                                                 </Box>
                                             </CustomButton>
@@ -338,8 +338,8 @@ export default function ProductEdit() {
                                                         onChange={(selectedDates) => handleSelectedDates(variantId, selectedDates)}
                                                         onMonthChange={(month: number, year: number) => setMonthAndYear({ month, year })}
                                                         selected={{
-                                                            start: moment(variant.start).startOf('day').toDate(),
-                                                            end: moment(variant.end).startOf('day').toDate(),
+                                                            start: moment(variant.startDate).toDate(),
+                                                            end: moment(variant.endDate).toDate(),
                                                         }}
                                                         multiMonth
                                                         allowRange

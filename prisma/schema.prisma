@@ -37,7 +37,7 @@ model Session {
 
 model Product {
   id        Int       @id @default(autoincrement())
-  productId String  
+  productId String
   title     String
   variants  Variant[]
 
@@ -49,11 +49,11 @@ model Product {
 }
 
 model Variant {
-  id        Int      @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   variantId String
   title     String
-  start     DateTime
-  end       DateTime
+  startDate String
+  endDate   String
 
   productId Int
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)

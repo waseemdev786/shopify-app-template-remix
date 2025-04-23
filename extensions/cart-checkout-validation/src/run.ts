@@ -8,8 +8,8 @@ import type {
 interface SalesPeriodVariant {
   variantId: string;
   title: string;
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
 }
 
 interface SalesPeriod {
@@ -20,19 +20,22 @@ export function run(input: RunInput): FunctionRunResult {
   const errors: FunctionError[] = [];
   const cartLines = input?.cart?.lines || [];
   const shop = input.shop;
-
-  const getSalesStatus = ({ now, start, end }: { now: string, start: string, end: string }) => {
     
-    console.log(JSON.stringify({ now, start, end }))
+  const getSalesStatus = ({ todayDate, startDate, endDate }:
+    { todayDate: string, startDate: string, endDate: string }) => {
+    // Log the values for debugging
+    console.log(JSON.stringify({ todayDate, startDate, endDate }));
 
-    const dateNow = new Date(now);
-    const dateStart = new Date(start);
-    const dateEnd = new Date(end);
-
-    if (dateNow < dateStart) return 'upcoming';
-    if (dateNow >= dateStart && dateNow <= dateEnd) return 'active';
+    // Convert the string dates to Date objects
+    const dateToday = new Date(todayDate);  // today's date
+    const dateStart = new Date(startDate); // start date
+    const dateEnd = new Date(endDate);    // end date
+  
+    // Determine the sales status based on the dates
+    if (dateToday < dateStart) return 'upcoming';
+    if (dateToday >= dateStart && dateToday <= dateEnd) return 'active';
     return 'expired';
-  }
+  };
 
   for (const rawLine of cartLines) {
     const line = rawLine as CartLine;
@@ -49,9 +52,9 @@ export function run(input: RunInput): FunctionRunResult {
 
         if (variant) {
           const status = getSalesStatus({
-            now: new Date(new Date(shop.localTime.date).setHours(23, 59, 59, 999)).toISOString(),
-            start: variant.start,
-            end: variant.end
+            todayDate: shop.localTime.date,
+            startDate: variant.startDate,
+            endDate: variant.endDate
           });
           console.log(status);
           

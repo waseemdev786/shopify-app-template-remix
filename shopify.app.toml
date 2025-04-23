@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "9b0e722c7ca6973901115d496d97ff97"
-application_url = "https://viewing-scholar-restaurants-comp.trycloudflare.com"
+application_url = "https://active-unto-armstrong-tion.trycloudflare.com"
 embedded = true
 name = "app"
 handle = "app-1010"
@@ -28,9 +28,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://viewing-scholar-restaurants-comp.trycloudflare.com/auth/callback",
-  "https://viewing-scholar-restaurants-comp.trycloudflare.com/auth/shopify/callback",
-  "https://viewing-scholar-restaurants-comp.trycloudflare.com/api/auth/callback"
+  "https://active-unto-armstrong-tion.trycloudflare.com/auth/callback",
+  "https://active-unto-armstrong-tion.trycloudflare.com/auth/shopify/callback",
+  "https://active-unto-armstrong-tion.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

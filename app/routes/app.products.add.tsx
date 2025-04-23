@@ -101,8 +101,8 @@ export default function ProductAdd() {
     const handleSelectedProduct = useCallback(() => {
         if (!shopifyProduct) return;
 
-        const start = moment().startOf('day').toISOString(); // Today at 00:00:00
-        const end = moment().add(10, 'days').endOf('day').toISOString(); // 10 days later at 23:59:59
+        const startDate = moment().format('YYYY-MM-DD')
+        const endDate = moment().add(10, 'days').format('YYYY-MM-DD'); 
 
         const selectedProduct: CustomProduct = {
             productId: shopifyProduct.id,
@@ -110,8 +110,8 @@ export default function ProductAdd() {
             variants: (shopifyProduct.variants as ProductVariant[]).map((variant) => ({
                 variantId: variant.id,
                 title: variant.title,
-                start,
-                end,
+                startDate,
+                endDate,
             }))
         }
 
@@ -125,8 +125,8 @@ export default function ProductAdd() {
 
         if (collapsibleId !== productId) {
             setMonthAndYear({
-                month: moment(selectedProduct.variants[0].start).month(),
-                year: moment(selectedProduct.variants[0].end).year(),
+                month: moment(selectedProduct.variants[0].startDate).month(),
+                year: moment(selectedProduct.variants[0].endDate).year(),
             });
         }
         setCollapsibleId((prevId) => (prevId === productId ? null : productId));
@@ -135,8 +135,8 @@ export default function ProductAdd() {
     const handleCollapsible = useCallback((variant: CustomVariant) => {
         if (collapsibleId !== variant.variantId) {
             setMonthAndYear({
-                month: moment(variant.start).month(),
-                year: moment(variant.start).year(),
+                month: moment(variant.startDate).month(),
+                year: moment(variant.startDate).year(),
             });
         }
         setCollapsibleId((prevId) => (prevId === variant.variantId ? null : variant.variantId));
@@ -152,8 +152,8 @@ export default function ProductAdd() {
                 variants: prev.variants.map((variant) => {
                     return {
                         ...variant,
-                        start: moment(selectedDates.start).startOf("day").toISOString(),
-                        end: moment(selectedDates.end).endOf("day").toISOString(),
+                        startDate: moment(selectedDates.start).format('YYYY-MM-DD'),
+                        endDate: moment(selectedDates.end).format('YYYY-MM-DD'),
                     };
                 })
             }
@@ -169,8 +169,8 @@ export default function ProductAdd() {
                     if (variant.variantId === variantId) {
                         return {
                             ...variant,
-                            start: moment(selectedDates.start).startOf("day").toISOString(),
-                            end: moment(selectedDates.end).endOf("day").toISOString(),
+                            startDate: moment(selectedDates.start).format('YYYY-MM-DD'),
+                            endDate: moment(selectedDates.end).format('YYYY-MM-DD'),
                         };
                     }
                     return variant;
@@ -255,8 +255,8 @@ export default function ProductAdd() {
                                                     onChange={(selectedDates) => handleBulkDates(selectedDates)}
                                                     onMonthChange={(month: number, year: number) => setMonthAndYear({ month, year })}
                                                     selected={{
-                                                        start: moment(selectedProduct.variants[0].start).startOf("day").toDate(),
-                                                        end: moment(selectedProduct.variants[0].end).startOf("day").toDate(),
+                                                        start: moment(selectedProduct.variants[0].startDate).toDate(),
+                                                        end: moment(selectedProduct.variants[0].endDate).toDate(),
                                                     }}
                                                     multiMonth
                                                     allowRange
@@ -279,7 +279,7 @@ export default function ProductAdd() {
                                                         <Box padding={"300"}>
                                                             <InlineStack align="space-between" blockAlign="center" gap={"300"}>
                                                                 <Text as="span">{variant.title}</Text>
-                                                                <Badge>{`${moment(variant.start).format("DD/MM/YYYY")} - ${moment(variant.end).format("DD/MM/YYYY")}`}</Badge>
+                                                                <Badge>{`${moment(variant.startDate).format("DD/MM/YYYY")} - ${moment(variant.endDate).format("DD/MM/YYYY")}`}</Badge>
                                                             </InlineStack>
                                                         </Box>
                                                     </CustomButton>
@@ -295,8 +295,8 @@ export default function ProductAdd() {
                                                                 onChange={(selectedDates) => handleSelectedDates(variantId, selectedDates)}
                                                                 onMonthChange={(month: number, year: number) => setMonthAndYear({ month, year })}
                                                                 selected={{
-                                                                    start: moment(variant.start).startOf("day").toDate(),
-                                                                    end: moment(variant.end).startOf("day").toDate(),
+                                                                    start: moment(variant.startDate).toDate(),
+                                                                    end: moment(variant.endDate).toDate(),
                                                                 }}
                                                                 multiMonth
                                                                 allowRange
